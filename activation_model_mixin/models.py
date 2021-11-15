@@ -36,7 +36,9 @@ class ActivationModelMixin(models.Model):
         elif not self.is_active and self.activation_date:
             self.activation_date = None
 
-        _send_signals = kwargs.pop('send_signal', True) and self.SEND_ACTIVATION_SIGNAL_ON_SAVE
+        _send_signals = (
+            kwargs.pop("send_signal", True) and self.SEND_ACTIVATION_SIGNAL_ON_SAVE
+        )
         if _send_signals:
             is_active_modified = False
             try:
@@ -48,9 +50,13 @@ class ActivationModelMixin(models.Model):
             super(ActivationModelMixin, self).save(*args, **kwargs)
             if is_active_modified:
                 if self.is_active:
-                    signals.set_activated.send(sender=self.__class__, instance=self, explicit=False)
+                    signals.set_activated.send(
+                        sender=self.__class__, instance=self, explicit=False
+                    )
                 else:
-                    signals.set_deactivated.send(sender=self.__class__, instance=self, explicit=False)
+                    signals.set_deactivated.send(
+                        sender=self.__class__, instance=self, explicit=False
+                    )
         else:
             super(ActivationModelMixin, self).save(*args, **kwargs)
 
@@ -58,7 +64,9 @@ class ActivationModelMixin(models.Model):
         self.is_active = True
         if commit:
             self.save(send_signal=False)
-            signals.set_activated.send(sender=self.__class__, instance=self, explicit=True)
+            signals.set_activated.send(
+                sender=self.__class__, instance=self, explicit=True
+            )
 
     set_active.alters_data = True
 
@@ -66,6 +74,8 @@ class ActivationModelMixin(models.Model):
         self.is_active = False
         if commit:
             self.save(send_signal=False)
-            signals.set_deactivated.send(sender=self.__class__, instance=self, explicit=True)
+            signals.set_deactivated.send(
+                sender=self.__class__, instance=self, explicit=True
+            )
 
     set_inactive.alters_data = True

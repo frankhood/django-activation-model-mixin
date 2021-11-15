@@ -15,4 +15,6 @@ class ActiveActivationEntryManager(ActivationEntryManager):
 
 class InactiveActivationEntryManager(ActivationEntryManager):
     def get_queryset(self):
-        return super(InactiveActivationEntryManager, self).get_queryset().inactive_items()
+        return (
+            super(InactiveActivationEntryManager, self).get_queryset().inactive_items()
+        )
